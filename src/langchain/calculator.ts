@@ -56,13 +56,14 @@ class AddTool extends StructuredTool {
     const agent = await createOpenAIFunctionsAgent({
       llm: model,
       tools: [addTool, multiplyTool],
-      prompt: prompt
+      prompt: prompt,
     });
   
     // Create the agent executor
     return new AgentExecutor({
       agent,
       tools: [addTool, multiplyTool],
+      verbose: true,
     });
   };
 
