@@ -63,7 +63,6 @@ class AddTool extends StructuredTool {
     return new AgentExecutor({
       agent,
       tools: [addTool, multiplyTool],
-      verbose: true,
     });
   };
 
@@ -78,6 +77,7 @@ class AddTool extends StructuredTool {
       const result = await agentExecutor.invoke({
         input: "Add 3 and 4 than multiple that by 10 and divide it by 2"
       });
+      console.log("Result:", result);
     } catch (error) {
       console.error("Failed to initialize agent:", error);
       process.exit(1);
