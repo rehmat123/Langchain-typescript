@@ -2,10 +2,12 @@
   "name": "product-diver-ai-agent",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "dependencies": {
     "@langchain/core": "^0.3.43",
     "@langchain/langgraph": "^0.2.63",
     "@langchain/openai": "^0.5.4",
+    "@modelcontextprotocol/sdk": "^1.10.1",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.2.0",
@@ -35,8 +37,9 @@
     "zod": "^3.24.2"
   },
   "scripts": {
-    "langchain": "npx ts-node src/langchain/calculator.ts",
-    "langgraph": "npx ts-node src/langgraph/calculator.ts"
+    "langchain": "npx ts-node-esm src/langchain/calculator.ts",
+    "langgraph": "npx ts-node-esm src/langgraph/calculator.ts",
+    "weather": "npx ts-node-esm src/langchain/weather.ts"
   },
   "eslintConfig": {
     "extends": [
