@@ -6,6 +6,7 @@
   "dependencies": {
     "@langchain/core": "^0.3.43",
     "@langchain/langgraph": "^0.2.63",
+    "@langchain/mcp-adapters": "^0.4.2",
     "@langchain/openai": "^0.5.4",
     "@modelcontextprotocol/sdk": "^1.10.1",
     "@testing-library/dom": "^10.4.0",
@@ -37,9 +38,10 @@
     "zod": "^3.24.2"
   },
   "scripts": {
-    "langchain": "npx ts-node-esm src/langchain/calculator.ts",
-    "langgraph": "npx ts-node-esm src/langgraph/calculator.ts",
-    "weather": "npx ts-node-esm src/langchain/weather.ts"
+    "function-calling-langchain": "node --loader ts-node/esm src/langchain/toolsCalling.ts",
+    "function-calling-langgraph": "node --loader ts-node/esm src/langgraph/toolsCalling.ts",
+    "single-mcp-weather-langchain": "node --loader ts-node/esm src/langchain/singleMcp.ts",
+    "multi-mcp-weather-langchain": "node --loader ts-node/esm src/langchain/multiMcp.ts"
   },
   "eslintConfig": {
     "extends": [

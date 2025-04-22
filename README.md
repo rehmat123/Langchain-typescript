@@ -1,19 +1,6 @@
-# 🤖 LangChain + LangGraph AI Agent (TypeScript)
+# 🤖 LangChain TypeScript Examples
 
-Build an AI-powered agent using [LangChain](https://js.langchain.com) and [LangGraph](https://github.com/langchain-ai/langgraph) in TypeScript. This project demonstrates how to set up an agent capable of performing reasoning, using tools, and navigating a graph-based workflow.
-
----
-
-## 🛠 Features
-
-- ⚙️ Agent setup with `ChatPromptTemplate` and `agent_scratchpad`
-- 🧩 Custom tools (e.g., math operations)
-- 🔄 LangGraph node/edge architecture
-- 🌐 OpenAI (or other LLMs) powered reasoning
-- ✨ Modular, clean TypeScript structure
-- 🌤️ Weather information using MCP server
-
----
+This repository demonstrates different ways to integrate LangChain with TypeScript, including native tool calling, single MCP server, and multiple MCP servers.
 
 ## 🚀 Getting Started
 
@@ -37,72 +24,10 @@ Create a .env file in the root:
 OPENAI_API_KEY=your-openai-key
 ```
 
-### 4. Run the Project
+### 4. Configure Cursor with Weather MCP Server
 
-```bash
-# Run the calculator agent
-pnpm run langchain
-pnpm run langraph
+edit the MCP configuration file at `~/.cursor/mcp.json`:
 
-# Get weather information
-pnpm weather
-```
-
-## 🧰 Tech Stack
-
-- [**LangChain.js**](https://js.langchain.com)  
-  Framework for building context-aware, language model-driven applications.
-
-- [**LangGraph**](https://github.com/langchain-ai/langgraph)  
-  A library for composing agents and chains as stateful graphs.
-
-- **TypeScript**  
-  Strongly typed JavaScript for better developer experience and maintainability.
-
-- [**OpenAI**](https://platform.openai.com/) *(or another LLM provider)*  
-  Used as the underlying language model to power the agent's reasoning and responses.
-
-- [**MCP Server**](https://github.com/modelcontextprotocol/servers)  
-  Model Context Protocol server for retrieving weather information.
-
-## ✅ Future Ideas
-
-- [ ] Add external API tools (e.g., news, stocks)
-- [ ] Integrate [LangSmith](https://smith.langchain.com/) for observability and debugging
-- [ ] Docker support for easier deployment
-- [ ] Web interface using React or Next.js
-
----
-
-
-# Weather MCP Server with LangChain
-
-This project demonstrates how to use a Model Context Protocol (MCP) server to get weather information using LangChain.
-
-## Prerequisites
-
-- Node.js (v16 or higher)
-- pnpm package manager
-- OpenAI API key
-
-## Setup
-
-1. Install dependencies:
-```bash
-pnpm install
-```
-
-2. Create a `.env` file in the root directory with your OpenAI API key:
-```
-OPENAI_API_KEY=your_api_key_here
-```
-
-
-## Configuration
-
-The project uses the following configuration files:
-
-### MCP Configuration (~/.cursor/mcp.json)
 ```json
 {
   "mcpServers": {
@@ -110,44 +35,112 @@ The project uses the following configuration files:
       "command": "npx",
       "args": ["-y", "@rehmatalisayany/weather-mcp-server"],
       "transport": "stdio"
+    },
+  }
+}
+```
+
+## 📚 LangChain Integrations
+
+### 1. Native Tool Calling
+
+The `src/langchain/toolsCalling.ts` file demonstrates how to use LangChain with native tool calling. This approach allows you to define custom tools directly in your code.
+
+```bash
+pnpm function-calling-langchain
+```
+
+### 2. Single MCP Server
+
+The `src/langchain/singleMcp.ts` file shows how to integrate a single MCP server (weather service) with LangChain. This allows you to use external services as tools in your LangChain agents.
+
+```bash
+pnpm single-mcp-weather-langchain
+```
+
+### 3. Multiple MCP Servers
+
+The `src/langchain/multiMcp.ts` file demonstrates how to use multiple MCP servers (weather and math) with LangChain. This enables your agents to use different tools from various services.
+
+```bash
+pnpm run multi-mcp-weather-langchain
+```
+
+## 🧰 Tech Stack
+
+- [**LangChain.js**](https://js.langchain.com) - Framework for building context-aware, language model-driven applications
+- **TypeScript** - Strongly typed JavaScript for better developer experience
+- [**OpenAI**](https://platform.openai.com/) - Used as the underlying language model
+- [**MCP Server**](https://github.com/modelcontextprotocol/servers) - Model Context Protocol server for external services
+
+
+## Project Structure
+
+```
+.
+├── src/
+│   ├── langchain/
+│   │   ├── toolsCalling.ts  # Native tool calling example
+│   │   ├── singleMcp.ts     # Single MCP server example
+│   │   └── multiMcp.ts      # Multiple MCP servers example
+│   └── index.ts             # Main entry point
+├── package.json
+└── README.md
+```
+
+### Common Issues
+
+1. **MCP Server Connection Timeout**
+   - If you see errors like `Failed to connect to stdio server: McpError: MCP error -32001: Request timed out`, try:
+     - Reducing the `delayMs` value in the server configuration
+     - Ensuring the MCP server package is installed correctly
+     - Checking your network connection
+
+2. **Tool Not Found**
+   - If you see errors about tools not being found, ensure:
+     - The tool name in your prompt matches the actual tool name (including prefixes)
+     - The MCP server is properly configured and running
+
+3. **Template Variable Errors**
+   - If you see errors like `Missing value for input variable`, check:
+     - Your prompt template for proper variable formatting
+     - That all required variables are provided in the `invoke` method
+
+### Debugging Tips
+
+- Enable verbose output in the agent executor to see detailed logs
+- Check the console for specific error messages
+- Verify that all required environment variables are set
+
+## 🔧 Configuration
+
+The project uses the following configuration for MCP servers:
+
+```json
+{
+  "mcpServers": {
+    "weather": {
+      "command": "npx",
+      "args": ["-y", "@rehmatalisayany/weather-mcp-server"],
+      "transport": "stdio"
+    },
+    "math": {
+      "command": "npx",
+      "args": ["-y", "nm-mcp-math"],
+      "transport": "stdio"
     }
   }
 }
 ```
 
-
-## Usage
-
-
-1. In a separate terminal, run the weather script:
-```bash
-pnpm weather
-```
-
-This will get the weather for Munich by default. To get weather for a different location, modify the `location` variable in `src/langchain/weather.ts`.
-
-## Project Structure
-
-- `src/langchain/weather.ts`: Main implementation of the weather MCP client using LangChain
-- `package.json`: Project dependencies and scripts
-- `tsconfig.json`: TypeScript configuration
-- `.env`: Environment variables (create this file)
-
-## How It Works
-
-1. The code initializes an MCP client that connects to the MCP weather server
-2. It creates a LangChain tool that interfaces with the MCP server
-3. An agent is created that can use this tool to get weather information
-4. The agent processes natural language queries about weather and returns the results
-
-## Troubleshooting
+## 🐛 Troubleshooting
 
 If you encounter issues:
 
-1. Make sure the weather MCP server is running
-2. Check that your OpenAI API key is correctly set in the `.env` file
-3. Verify that all dependencies are installed
-4. Ensure the MCP configuration in `~/.cursor/mcp.json` is correct
+1. Make sure your OpenAI API key is correctly set in the `.env` file
+2. Verify that all dependencies are installed
+3. Check that the MCP servers are running correctly
+4. For connection timeouts, try reducing the `delayMs` value in the server configuration
 
 ## License
 
