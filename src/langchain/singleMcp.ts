@@ -73,7 +73,7 @@ export async function processQuery(input: string) {
 
 // Example usage
 async function main() {
-  const result = await processQuery(`What's the weather in Munich and What should I wear today?`);
+  const result = await processQuery(`should i take an umbrella in munich today?`);
   console.log("Weather result:", result);
 }
 

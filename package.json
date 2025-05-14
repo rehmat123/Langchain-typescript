@@ -41,7 +41,8 @@
     "function-calling-langchain": "node --loader ts-node/esm src/langchain/toolsCalling.ts",
     "function-calling-langgraph": "node --loader ts-node/esm src/langgraph/toolsCalling.ts",
     "single-mcp-weather-langchain": "node --loader ts-node/esm src/langchain/singleMcp.ts",
-    "multi-mcp-weather-langchain": "node --loader ts-node/esm src/langchain/multiMcp.ts"
+    "multi-mcp-weather-langchain": "node --loader ts-node/esm src/langchain/multiMcp.ts",
+     "function-calling": "node --loader ts-node/esm src/functionCalling/weather.ts"
   },
   "eslintConfig": {
     "extends": [
@@ -60,5 +61,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "tsx": "^4.19.4"
   }
 }
