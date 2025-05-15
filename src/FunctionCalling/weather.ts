@@ -49,11 +49,31 @@ async function getWeather(location: string): Promise<number> {
   }
 }
 
+function getForecast(location: string): string {
+  return `It will be rainying in ${location} today.`;
+}
+
 const tools: any = [
   {
     type: "function",
-    name: "get_weather", // Ensure this matches the function name being called
+    name: "get_current_weather", // Ensure this matches the function name being called
     description: "Get current temperature for a given location.",
+    parameters: {
+      type: "object",
+      properties: {
+        location: {
+          type: "string",
+          description: "City and country e.g. Bogotá, Colombia",
+        },
+      },
+      required: ["location"],
+    },
+  },
+  {
+    type: "function",
+    name: "get_weather_forcast", // Ensure this matches the function name being called
+    description:
+      "Get weather forcast for particular location for a day. Use this function when user ask about suggestion like 'Should I take umbrella?'",
     parameters: {
       type: "object",
       properties: {
@@ -72,7 +92,8 @@ async function callOpenAIChat(userMessage, model = "gpt-3.5-turbo") {
     const input: any = [
       {
         role: "system",
-        content: "You are a highly knowledgeable assistant specializing in providing accurate and up-to-date weather information. Your goal is to assist users with weather-related queries in a clear and concise manner. Always ensure your responses are helpful and relevant to the user's location and context.",
+        content:
+          "You are a Weather assistant Agent specializing in providing accurate weather information.",
       },
       { role: "user", content: userMessage },
     ];
@@ -81,7 +102,9 @@ async function callOpenAIChat(userMessage, model = "gpt-3.5-turbo") {
       model,
       input,
       tools,
+      temperature: 0,
     });
+
     console.log("Response from OpenAI:", response.output[0]);
 
     if (response.output[0].type === "function_call") {
@@ -90,9 +113,15 @@ async function callOpenAIChat(userMessage, model = "gpt-3.5-turbo") {
       let result;
       console.log("Function thinks this should be the arguments:", args);
 
-      if (toolCall.name === "get_weather") {
+      if (toolCall.name === "get_current_weather") {
         const { location } = args;
+        console.log("Function call arguments:", await getWeather(location));
         result = await getWeather(location);
+      }
+      if (toolCall.name === "get_weather_forcast") {
+        const { location } = args;
+        console.log("Function call arguments:", await getForecast(location));
+        result = await getForecast(location);
       }
       input.push(toolCall);
       input.push({
@@ -106,7 +135,7 @@ async function callOpenAIChat(userMessage, model = "gpt-3.5-turbo") {
         model,
         input,
         tools,
-        temperature: 0
+        temperature: 0,
       });
       console.log(finalResponse.output_text);
     }
@@ -124,6 +153,6 @@ async function callOpenAIChat(userMessage, model = "gpt-3.5-turbo") {
 
 // 2nd Example usage
 (async () => {
-  const userMessage = "Should I take an umbrella in munich today?";
+  const userMessage = "Should i take umbrella in Munich today?";
   const response = await callOpenAIChat(userMessage);
 })();
